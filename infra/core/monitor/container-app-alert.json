@@ -1,0 +1,96 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "2923240904070375257"
+    },
+    "description": "Creates an Azure Monitor metric alert for Container App running status."
+  },
+  "parameters": {
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "global"
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "containerAppResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the Container App to monitor"
+      }
+    },
+    "severity": {
+      "type": "int",
+      "defaultValue": 1,
+      "allowedValues": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "metadata": {
+        "description": "Alert severity (0=Critical, 1=Error, 2=Warning, 3=Informational, 4=Verbose)"
+      }
+    },
+    "enabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Whether the alert rule is enabled"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/metricAlerts",
+      "apiVersion": "2018-03-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "Alert fires when the Container App running status is not Running (RunningStatus < 1).",
+        "severity": "[parameters('severity')]",
+        "enabled": "[parameters('enabled')]",
+        "scopes": [
+          "[parameters('containerAppResourceId')]"
+        ],
+        "evaluationFrequency": "PT1M",
+        "windowSize": "PT5M",
+        "criteria": {
+          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+          "allOf": [
+            {
+              "name": "RunningStatusNotRunning",
+              "criterionType": "StaticThresholdCriterion",
+              "metricName": "RunningStatus",
+              "metricNamespace": "microsoft.app/containerapps",
+              "operator": "LessThan",
+              "threshold": 1,
+              "timeAggregation": "Average"
+            }
+          ]
+        },
+        "autoMitigate": true
+      }
+    }
+  ],
+  "outputs": {
+    "alertId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Insights/metricAlerts', parameters('name'))]"
+    },
+    "alertName": {
+      "type": "string",
+      "value": "[parameters('name')]"
+    }
+  }
+}

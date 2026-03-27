@@ -177,5 +177,6 @@ output defaultDomain string = containerAppsEnvironment.properties.defaultDomain
 output identityPrincipalId string = normalizedIdentityType == 'None' ? '' : (empty(identityName) ? app.identity.principalId : userIdentity.properties.principalId)
 output imageName string = imageName
 output name string = app.name
+output resourceId string = app.id
 output serviceBind object = !empty(serviceType) ? { serviceId: app.id, name: name } : {}
 output uri string = ingressEnabled ? 'https://${app.properties.configuration.ingress.fqdn}' : ''
