@@ -407,6 +407,16 @@ module web 'web.bicep' = {
   }
 }
 
+module containerAppRunningAlert 'core/monitor/container-app-alert.bicep' = {
+  name: 'container-app-running-alert'
+  scope: resourceGroup
+  params: {
+    name: '${webAppName}-running-status-alert'
+    tags: tags
+    containerAppResourceId: web.outputs.SERVICE_WEB_RESOURCE_ID
+  }
+}
+
 resource openAIResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAIResourceGroupName)) {
   name: !empty(openAIResourceGroupName) ? openAIResourceGroupName : resourceGroup.name
 }

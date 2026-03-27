@@ -47,6 +47,7 @@ module app 'core/host/container-app-upsert.bicep' = {
 output SERVICE_WEB_IDENTITY_PRINCIPAL_ID string = webIdentity.properties.principalId
 output SERVICE_WEB_IDENTITY_NAME string = webIdentity.name
 output SERVICE_WEB_NAME string = app.outputs.name
+output SERVICE_WEB_RESOURCE_ID string = app.outputs.resourceId
 output SERVICE_WEB_URI string = app.outputs.uri
 output SERVICE_WEB_IMAGE_NAME string = app.outputs.imageName
 
